@@ -1,0 +1,24 @@
+# Python virtual environments & caches
+backend/venv/
+backend/.venv/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local databases and environment variables
+backend/.env
+backend/*.db
+backend/*.sqlite3
+
+# Node / React dependencies & builds
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# System & IDE files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
