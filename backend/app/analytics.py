@@ -214,6 +214,7 @@ async def fetch_dashboard_kpis(db: AsyncSession) -> dict[str, Any]:
 
     return {
         "total_resources": len(all_resources),
+        "total_units": sum(getattr(r, "total_quantity", 1) or 1 for r in all_resources),
         "active_bookings": len(active_bookings),
         "overall_utilization_pct": analytics["overall_utilization_pct"],
         "underutilized_count": sum(

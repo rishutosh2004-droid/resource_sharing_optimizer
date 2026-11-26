@@ -1,7 +1,7 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_, or_
+from sqlalchemy import select, and_, or_, func
 from sqlalchemy.orm import selectinload
 
 from app.database import get_db
@@ -19,9 +19,10 @@ async def check_time_overlap(
     start_time,
     end_time,
     exclude_booking_id: Optional[int] = None,
+    total_quantity: int = 1,
 ) -> bool:
-    """Returns True if there is a conflicting booking."""
-    query = select(Booking).where(
+    """Returns True if overlapping active bookings reach or exceed total_quantity."""
+    query = select(func.count(Booking.id)).where(
         Booking.resource_id == resource_id,
         Booking.status.in_([BookingStatus.PENDING, BookingStatus.APPROVED]),
         or_(
@@ -32,7 +33,8 @@ async def check_time_overlap(
         query = query.where(Booking.id != exclude_booking_id)
 
     result = await db.execute(query)
-    return result.scalar_one_or_none() is not None
+    count = result.scalar() or 0
+    return count >= max(1, total_quantity)
 
 
 @router.get("/", response_model=List[BookingOut])
@@ -149,11 +151,13 @@ async def create_booking(
             booking_in.resource_id,
             booking_in.start_time,
             booking_in.end_time,
+            total_quantity=getattr(resource, "total_quantity", 1) or 1,
         )
         if has_conflict:
+            qty = getattr(resource, "total_quantity", 1) or 1
             raise HTTPException(
                 status_code=409,
-                detail="Time slot conflicts with an existing booking",
+                detail=f"All {qty} unit(s) of this resource are booked for this time slot. Please choose another time.",
             )
 
         booking = Booking(

@@ -34,6 +34,7 @@ async def clear_db(session: AsyncSession):
 async def seed():
     # ── Create Tables ─────────────────────────────────────────────────────────
     async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
     async with AsyncSessionLocal() as session:
@@ -100,6 +101,7 @@ async def seed():
             name="GPU Cluster A100",
             category="Computing",
             cost_per_hour=150.0,
+            total_quantity=8,
             is_cross_shareable=True,
             status=ResourceStatus.ACTIVE,
             description="High-performance NVIDIA A100 GPU cluster with 8 GPUs, 640GB VRAM",
@@ -110,6 +112,7 @@ async def seed():
             name="VR Research Lab",
             category="Research Lab",
             cost_per_hour=50.0,
+            total_quantity=10,
             is_cross_shareable=True,
             status=ResourceStatus.ACTIVE,
             description="Full VR lab with 10 HTC Vive Pro headsets and motion capture",
@@ -120,6 +123,7 @@ async def seed():
             name="HPC Linux Cluster",
             category="Computing",
             cost_per_hour=80.0,
+            total_quantity=16,
             is_cross_shareable=False,
             status=ResourceStatus.ACTIVE,
             description="High-performance computing cluster for simulations",
@@ -130,6 +134,7 @@ async def seed():
             name="Mass Spectrometer",
             category="Analytical Instrument",
             cost_per_hour=200.0,
+            total_quantity=2,
             is_cross_shareable=True,
             status=ResourceStatus.ACTIVE,
             description="Thermo Fisher Orbitrap mass spectrometer for proteomics",
@@ -140,6 +145,7 @@ async def seed():
             name="Spectrophotometer Suite",
             category="Analytical Instrument",
             cost_per_hour=35.0,
+            total_quantity=4,
             is_cross_shareable=True,
             status=ResourceStatus.ACTIVE,
             description="UV-Vis-NIR spectrophotometer array",
@@ -150,6 +156,7 @@ async def seed():
             name="Real-Time PCR System",
             category="Molecular Biology",
             cost_per_hour=60.0,
+            total_quantity=6,
             is_cross_shareable=False,
             status=ResourceStatus.ACTIVE,
             description="Applied Biosystems QuantStudio 12K Flex",
@@ -160,6 +167,7 @@ async def seed():
             name="High-Power Laser Lab",
             category="Research Lab",
             cost_per_hour=120.0,
+            total_quantity=3,
             is_cross_shareable=True,
             status=ResourceStatus.ACTIVE,
             description="Ultrafast laser systems for optics experiments",
@@ -170,6 +178,7 @@ async def seed():
             name="Class 100 Clean Room",
             category="Fabrication",
             cost_per_hour=90.0,
+            total_quantity=2,
             is_cross_shareable=True,
             status=ResourceStatus.MAINTENANCE,
             description="ISO Class 5 clean room for nanofabrication",

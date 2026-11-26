@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Zap, Mail, Lock, AlertCircle } from 'lucide-react'
+import { Zap, Mail, Lock, AlertCircle, Sparkles } from 'lucide-react'
 
 export function LoginPage() {
   const { login } = useAuth()
@@ -12,10 +12,10 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   const DEMO_ACCOUNTS = [
-    { label: 'Super Admin', email: 'admin@institution.edu', password: 'admin123' },
-    { label: 'CS Admin', email: 'cs.admin@institution.edu', password: 'admin123' },
-    { label: 'Bio Admin', email: 'bio.admin@institution.edu', password: 'admin123' },
-    { label: 'CS Member', email: 'john.doe@institution.edu', password: 'member123' },
+    { label: 'Super Admin', email: 'admin@institution.edu', password: 'admin123', desc: 'Global Control' },
+    { label: 'CS Admin', email: 'cs.admin@institution.edu', password: 'admin123', desc: 'CS Approvals' },
+    { label: 'Bio Admin', email: 'bio.admin@institution.edu', password: 'admin123', desc: 'Bio Approvals' },
+    { label: 'CS Member', email: 'john.doe@institution.edu', password: 'member123', desc: 'Researcher' },
   ]
 
   const handleSubmit = async (e) => {
@@ -26,7 +26,7 @@ export function LoginPage() {
       await login(email, password)
       navigate('/')
     } catch (err) {
-      setError(err.response?.data?.detail || 'Login failed. Please try again.')
+      setError(err.response?.data?.detail || 'Invalid credentials. Please verify your email and password.')
     } finally {
       setLoading(false)
     }
@@ -39,43 +39,41 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="w-full max-w-md animate-fade-in">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-brand-gradient shadow-glow mb-4">
-            <Zap className="w-8 h-8 text-white" />
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md animate-fade-in space-y-6">
+        {/* Logo and App Title */}
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-600 shadow-md mb-3">
+            <Zap className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white">RSO Platform</h1>
-          <p className="text-gray-400 mt-2">Resource Sharing Optimizer</p>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">RSO Platform</h1>
+          <p className="text-sm text-slate-500 mt-1">Resource Sharing & Utilization Optimizer</p>
         </div>
 
-        {/* Card */}
-        <div className="card p-6">
-          <h2 className="text-xl font-semibold text-white mb-6">Sign In</h2>
+        {/* Login Card */}
+        <div className="card p-8">
+          <h2 className="text-lg font-bold text-slate-900 mb-1">Sign In</h2>
+          <p className="text-xs text-slate-500 mb-6">Enter your institutional credentials to access your account</p>
 
           {error && (
-            <div className="flex items-center gap-2 text-red-400 bg-red-900/20 border border-red-800/50 rounded-lg p-3 mb-4">
+            <div className="flex items-center gap-2.5 text-rose-700 bg-rose-50 border border-rose-200 rounded-xl p-3 mb-5 text-xs">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
-              <p className="text-sm">{error}</p>
+              <p className="font-medium">{error}</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="label" htmlFor="email">Email</label>
+              <label className="label" htmlFor="email">Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="input pl-10"
-                  placeholder="user@institution.edu"
+                  placeholder="name@institution.edu"
                   required
                 />
               </div>
@@ -84,7 +82,7 @@ export function LoginPage() {
             <div>
               <label className="label" htmlFor="password">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   id="password"
                   type="password"
@@ -100,34 +98,38 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full py-2.5 mt-2"
+              className="btn-primary w-full py-2.5 mt-2 font-semibold"
             >
-              {loading ? 'Signing in...' : 'Sign In'}
+              {loading ? 'Authenticating...' : 'Sign In'}
             </button>
           </form>
 
-          <div className="mt-4 text-center">
-            <p className="text-sm text-gray-500">
-              Don't have an account?{' '}
-              <Link to="/register" className="text-brand-400 hover:text-brand-300 font-medium">
-                Register
+          <div className="mt-5 pt-5 border-t border-slate-100 text-center">
+            <p className="text-xs text-slate-500">
+              Need a new account?{' '}
+              <Link to="/register" className="text-indigo-600 hover:text-indigo-700 font-semibold">
+                Register here
               </Link>
             </p>
           </div>
         </div>
 
-        {/* Demo accounts */}
-        <div className="card p-4 mt-4">
-          <p className="text-xs text-gray-500 mb-3 font-semibold uppercase tracking-wider">Demo Accounts</p>
+        {/* Quick-fill Demo Accounts */}
+        <div className="card p-5 bg-white">
+          <div className="flex items-center gap-1.5 mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            Quick-fill Demo Accounts
+          </div>
           <div className="grid grid-cols-2 gap-2">
             {DEMO_ACCOUNTS.map((acc) => (
               <button
                 key={acc.email}
+                type="button"
                 onClick={() => fillDemo(acc)}
-                className="text-left p-2 rounded-lg bg-surface border border-surface-border hover:border-brand-700 transition-colors group"
+                className="text-left p-2.5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-indigo-50/70 hover:border-indigo-300 transition-all group"
               >
-                <p className="text-xs font-semibold text-brand-400 group-hover:text-brand-300">{acc.label}</p>
-                <p className="text-xs text-gray-500 truncate">{acc.email}</p>
+                <p className="text-xs font-semibold text-slate-900 group-hover:text-indigo-600">{acc.label}</p>
+                <p className="text-[11px] text-slate-500 truncate mt-0.5">{acc.desc}</p>
               </button>
             ))}
           </div>

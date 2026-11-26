@@ -65,6 +65,7 @@ class Resource(Base):
     name = Column(String(200), nullable=False)
     category = Column(String(100), nullable=False)
     cost_per_hour = Column(Float, default=0.0)
+    total_quantity = Column(Integer, default=1, nullable=False)
     is_cross_shareable = Column(Boolean, default=False)
     status = Column(SAEnum(ResourceStatus), default=ResourceStatus.ACTIVE, nullable=False)
     specs_json = Column(Text, default="{}")

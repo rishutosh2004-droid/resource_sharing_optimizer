@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { bookingsApi } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import { StatusBadge, LoadingPage, EmptyState, PageHeader } from '../components/ui'
-import { ShieldCheck, CheckCircle, XCircle, AlertTriangle } from 'lucide-react'
+import { ShieldCheck, CheckCircle2, XCircle, AlertTriangle, Check } from 'lucide-react'
 import { format, parseISO } from 'date-fns'
 
 export function ApprovalsPage() {
@@ -45,21 +45,21 @@ export function ApprovalsPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-3" />
-          <p className="text-gray-400">Admin access required</p>
+          <p className="text-slate-600 font-medium">Administrator privileges required</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in space-y-6">
       <PageHeader
         title="Pending Approvals"
-        subtitle="Review and approve cross-department resource booking requests"
+        subtitle="Review, authorize, or decline cross-department reservation requests"
         action={
-          <div className="flex items-center gap-2 text-sm text-amber-400 bg-amber-900/20 border border-amber-700/50 px-3 py-1.5 rounded-lg">
-            <ShieldCheck className="w-4 h-4" />
-            {bookings.length} pending
+          <div className="flex items-center gap-2 text-xs font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-lg shadow-sm">
+            <ShieldCheck className="w-4 h-4 text-amber-600" />
+            {bookings.length} Pending Review
           </div>
         }
       />
@@ -69,8 +69,8 @@ export function ApprovalsPage() {
       ) : bookings.length === 0 ? (
         <EmptyState
           icon={ShieldCheck}
-          title="No pending approvals"
-          subtitle="All booking requests have been processed"
+          title="All caught up!"
+          subtitle="There are no pending booking requests awaiting approval at this time"
         />
       ) : (
         <div className="space-y-4">
@@ -82,62 +82,67 @@ export function ApprovalsPage() {
             const isCrossDept = booking.resource?.department_id !== booking.user?.department_id
 
             return (
-              <div key={booking.id} className={`card p-5 transition-all ${isCrossDept ? 'border-amber-800/40' : ''}`}>
-                <div className="flex items-start justify-between gap-4">
+              <div
+                key={booking.id}
+                className={`card p-6 transition-all hover:shadow-card-hover ${
+                  isCrossDept ? 'border-l-4 border-l-amber-500' : ''
+                }`}
+              >
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-white">{booking.resource?.name}</h3>
+                    <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                      <h3 className="font-bold text-slate-900 text-base">{booking.resource?.name}</h3>
                       {isCrossDept && (
-                        <span className="badge badge-warning">Cross-Dept</span>
+                        <span className="badge badge-warning">Cross-Department</span>
                       )}
                       <StatusBadge status={booking.status} />
                     </div>
-                    <p className="text-xs text-gray-500 mb-3">
+                    <p className="text-xs text-slate-500 mb-4">
                       {booking.resource?.department?.name} · {booking.resource?.category}
                     </p>
 
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs bg-slate-50/70 rounded-xl p-3.5 border border-slate-100">
                       <div>
-                        <p className="text-gray-500 mb-0.5">Requested by</p>
-                        <p className="text-gray-300 font-medium">{booking.user?.full_name}</p>
-                        <p className="text-gray-500">{booking.user?.department?.name}</p>
+                        <p className="text-slate-400 font-medium mb-1">Requested By</p>
+                        <p className="text-slate-900 font-semibold">{booking.user?.full_name}</p>
+                        <p className="text-slate-500">{booking.user?.department?.name}</p>
                       </div>
                       <div>
-                        <p className="text-gray-500 mb-0.5">Time Slot</p>
-                        <p className="text-gray-300">{format(parseISO(booking.start_time), 'MMM d, yyyy')}</p>
-                        <p className="text-gray-500">
+                        <p className="text-slate-400 font-medium mb-1">Time Slot</p>
+                        <p className="text-slate-900 font-semibold">{format(parseISO(booking.start_time), 'MMM d, yyyy')}</p>
+                        <p className="text-slate-500">
                           {format(parseISO(booking.start_time), 'h:mm a')} – {format(parseISO(booking.end_time), 'h:mm a')} ({duration}h)
                         </p>
                       </div>
                       <div>
-                        <p className="text-gray-500 mb-0.5">Purpose</p>
-                        <p className="text-gray-300 line-clamp-2">{booking.purpose}</p>
+                        <p className="text-slate-400 font-medium mb-1">Purpose</p>
+                        <p className="text-slate-800 line-clamp-2 leading-relaxed">{booking.purpose}</p>
                       </div>
                     </div>
 
                     {booking.notes && (
-                      <p className="mt-3 text-xs text-gray-500 bg-surface px-3 py-2 rounded-lg">
-                        <span className="font-medium text-gray-400">Notes:</span> {booking.notes}
-                      </p>
+                      <div className="mt-3 text-xs text-slate-600 bg-slate-50 border border-slate-200/80 px-3 py-2 rounded-lg">
+                        <span className="font-semibold text-slate-700">Notes:</span> {booking.notes}
+                      </div>
                     )}
                   </div>
 
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-row md:flex-col gap-2.5 sm:self-end md:self-center">
                     <button
                       onClick={() => handleAction(booking.id, 'APPROVED')}
                       disabled={isBusy}
-                      className="btn-success flex items-center gap-1.5 text-sm px-3 py-1.5"
+                      className="btn-success flex items-center justify-center gap-1.5 text-xs px-4 py-2 font-medium"
                     >
-                      <CheckCircle className="w-4 h-4" />
+                      <CheckCircle2 className="w-4 h-4" />
                       Approve
                     </button>
                     <button
                       onClick={() => handleAction(booking.id, 'REJECTED')}
                       disabled={isBusy}
-                      className="btn-danger flex items-center gap-1.5 text-sm px-3 py-1.5"
+                      className="btn-danger flex items-center justify-center gap-1.5 text-xs px-4 py-2 font-medium"
                     >
                       <XCircle className="w-4 h-4" />
-                      Reject
+                      Decline
                     </button>
                   </div>
                 </div>
@@ -148,8 +153,9 @@ export function ApprovalsPage() {
       )}
 
       {toast && (
-        <div className="fixed bottom-6 right-6 bg-emerald-800 text-emerald-100 px-4 py-3 rounded-xl shadow-lg animate-slide-up z-50">
-          ✓ {toast}
+        <div className="fixed bottom-6 right-6 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl animate-slide-up flex items-center gap-2 z-50 text-sm font-medium">
+          <Check className="w-4 h-4 text-emerald-400" />
+          {toast}
         </div>
       )}
     </div>

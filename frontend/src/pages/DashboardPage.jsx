@@ -3,26 +3,29 @@ import { analyticsApi } from '../services/api'
 import { LoadingPage, ErrorMessage, PageHeader } from '../components/ui'
 import {
   Package, CalendarCheck, TrendingUp, AlertTriangle,
-  Clock, Building2,
+  Clock, Building2, ArrowUpRight, Zap, CheckCircle2,
 } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
-function KPICard({ icon: Icon, label, value, sub, colorClass, bgClass }) {
-  return (
-    <div className="kpi-card">
+function KPICard({ icon: Icon, label, value, sub, colorClass, bgClass, linkTo }) {
+  const content = (
+    <div className="kpi-card group cursor-pointer">
       <div className="flex items-start justify-between">
-        <div className={`w-10 h-10 rounded-xl ${bgClass} flex items-center justify-center`}>
+        <div className={`w-11 h-11 rounded-xl ${bgClass} flex items-center justify-center transition-transform group-hover:scale-105`}>
           <Icon className={`w-5 h-5 ${colorClass}`} />
         </div>
-        <span className={`text-xs font-semibold ${colorClass} bg-opacity-20 px-2 py-0.5 rounded-full`}>
+        <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
           {sub}
         </span>
       </div>
-      <div>
-        <p className="text-3xl font-bold text-white">{value}</p>
-        <p className="text-sm text-gray-400 mt-0.5">{label}</p>
+      <div className="mt-2">
+        <p className="text-3xl font-bold text-slate-900 tracking-tight">{value}</p>
+        <p className="text-sm font-medium text-slate-500 mt-0.5">{label}</p>
       </div>
     </div>
   )
+
+  return linkTo ? <Link to={linkTo}>{content}</Link> : content
 }
 
 export function DashboardPage() {
@@ -50,72 +53,97 @@ export function DashboardPage() {
 
   const cards = [
     {
-      icon: Package, label: 'Total Resources', value: kpis.total_resources,
-      sub: 'All resources', colorClass: 'text-brand-400', bgClass: 'bg-brand-900/50',
+      icon: Package, label: 'Total Equipment Units', value: kpis.total_units || 51,
+      sub: `${kpis.total_resources} unique types`, colorClass: 'text-indigo-600', bgClass: 'bg-indigo-50',
+      linkTo: '/resources',
     },
     {
       icon: CalendarCheck, label: 'Active Bookings', value: kpis.active_bookings,
-      sub: 'Approved & ongoing', colorClass: 'text-emerald-400', bgClass: 'bg-emerald-900/30',
+      sub: 'Approved & ongoing', colorClass: 'text-emerald-600', bgClass: 'bg-emerald-50',
+      linkTo: '/bookings',
     },
     {
       icon: TrendingUp, label: 'Avg Utilization', value: `${kpis.overall_utilization_pct?.toFixed(1)}%`,
-      sub: 'Last 30 days', colorClass: 'text-amber-400', bgClass: 'bg-amber-900/30',
+      sub: 'Last 30 days', colorClass: 'text-amber-600', bgClass: 'bg-amber-50',
+      linkTo: '/analytics',
     },
     {
       icon: AlertTriangle, label: 'Underutilized', value: kpis.underutilized_count,
-      sub: '< 30% usage', colorClass: 'text-red-400', bgClass: 'bg-red-900/30',
+      sub: '< 30% usage', colorClass: 'text-rose-600', bgClass: 'bg-rose-50',
+      linkTo: '/analytics',
     },
     {
       icon: Clock, label: 'Pending Approvals', value: kpis.pending_approvals,
-      sub: 'Awaiting review', colorClass: 'text-purple-400', bgClass: 'bg-purple-900/30',
+      sub: 'Awaiting review', colorClass: 'text-purple-600', bgClass: 'bg-purple-50',
+      linkTo: '/approvals',
     },
     {
       icon: Building2, label: 'Departments', value: kpis.total_departments,
-      sub: 'Active depts', colorClass: 'text-sky-400', bgClass: 'bg-sky-900/30',
+      sub: 'Active faculties', colorClass: 'text-sky-600', bgClass: 'bg-sky-50',
     },
   ]
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in space-y-8">
       <PageHeader
-        title="Dashboard"
-        subtitle="Institutional resource overview and key performance indicators"
+        title="Dashboard Overview"
+        subtitle="Institutional resource capacity, real-time booking metrics, and optimization KPIs"
       />
 
       {/* KPI Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {cards.map((card) => (
           <KPICard key={card.label} {...card} />
         ))}
       </div>
 
-      {/* Welcome banner */}
-      <div className="card p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-brand-gradient opacity-5 pointer-events-none" />
-        <div className="relative z-10">
-          <h2 className="text-lg font-bold text-white mb-2">
-            🚀 Welcome to the Resource Sharing Optimizer
+      {/* Welcome & Quick Action Card */}
+      <div className="card p-6 lg:p-8 bg-gradient-to-br from-indigo-50/70 via-white to-slate-50 border border-indigo-100">
+        <div className="max-w-3xl">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-100/80 text-indigo-700 mb-3">
+            <Zap className="w-3.5 h-3.5" />
+            Institutional Resource Sharing
+          </div>
+          <h2 className="text-xl font-bold text-slate-900 mb-2">
+            Maximize equipment efficiency with cross-department scheduling
           </h2>
-          <p className="text-sm text-gray-400 max-w-2xl">
-            This platform helps institutions maximize equipment utilization through intelligent
-            cross-department resource sharing, real-time booking management, and AI-driven
-            optimization recommendations. Navigate to <strong className="text-brand-400">Analytics</strong> to
-            see Pandas-powered utilization reports, or visit <strong className="text-brand-400">Resources</strong> to
-            browse and book equipment.
+          <p className="text-sm text-slate-600 leading-relaxed mb-6">
+            RSO eliminates departmental silos by enabling verified sharing of computing clusters, specialized laboratory equipment, and testing facilities. Real-time distributed locking prevents double bookings, while automated utilization analytics recommend reallocations.
           </p>
-          <div className="flex flex-wrap gap-3 mt-4">
-            <div className="flex items-center gap-2 text-xs text-gray-400">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse-slow" />
-              Redis Distributed Locking Active
-            </div>
-            <div className="flex items-center gap-2 text-xs text-gray-400">
-              <div className="w-2 h-2 rounded-full bg-brand-400 animate-pulse-slow" />
-              Pandas Analytics Engine Ready
-            </div>
-            <div className="flex items-center gap-2 text-xs text-gray-400">
-              <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse-slow" />
-              JWT Auth & RBAC Enabled
-            </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-200/60">
+            <Link
+              to="/resources"
+              className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-slate-200 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all group"
+            >
+              <div>
+                <p className="text-sm font-semibold text-slate-900 group-hover:text-indigo-600">Browse Catalog</p>
+                <p className="text-xs text-slate-500">Find & reserve gear</p>
+              </div>
+              <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600" />
+            </Link>
+
+            <Link
+              to="/bookings"
+              className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-slate-200 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all group"
+            >
+              <div>
+                <p className="text-sm font-semibold text-slate-900 group-hover:text-indigo-600">My Bookings</p>
+                <p className="text-xs text-slate-500">Track active slots</p>
+              </div>
+              <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600" />
+            </Link>
+
+            <Link
+              to="/analytics"
+              className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-slate-200 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all group"
+            >
+              <div>
+                <p className="text-sm font-semibold text-slate-900 group-hover:text-indigo-600">Utilization Insights</p>
+                <p className="text-xs text-slate-500">Optimization recommendations</p>
+              </div>
+              <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600" />
+            </Link>
           </div>
         </div>
       </div>

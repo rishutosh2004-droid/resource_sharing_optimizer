@@ -14,36 +14,38 @@ function BookingRow({ booking, onCancel }) {
   )
 
   return (
-    <tr className="border-b border-surface-border hover:bg-surface-hover transition-colors">
+    <tr className="border-b border-slate-100 hover:bg-slate-50/80 transition-colors">
       <td className="table-cell">
         <div>
-          <p className="font-medium text-white">{booking.resource?.name}</p>
-          <p className="text-xs text-gray-500">{booking.resource?.department?.name}</p>
+          <p className="font-semibold text-slate-900">{booking.resource?.name}</p>
+          <p className="text-xs text-slate-500">{booking.resource?.department?.name}</p>
         </div>
       </td>
       <td className="table-cell">
         <div className="text-xs">
-          <p className="text-gray-300">{format(parseISO(booking.start_time), 'MMM d, yyyy')}</p>
-          <p className="text-gray-500">
+          <p className="font-medium text-slate-800">{format(parseISO(booking.start_time), 'MMM d, yyyy')}</p>
+          <p className="text-slate-500 mt-0.5">
             {format(parseISO(booking.start_time), 'h:mm a')} – {format(parseISO(booking.end_time), 'h:mm a')}
           </p>
-          <p className="text-brand-400 font-medium mt-0.5">{duration}h</p>
+          <span className="inline-block mt-1 font-semibold text-indigo-700 bg-indigo-50 border border-indigo-100 px-1.5 py-0.5 rounded text-[11px]">
+            {duration}h duration
+          </span>
         </div>
       </td>
       <td className="table-cell">
-        <p className="text-xs text-gray-300 max-w-xs truncate">{booking.purpose}</p>
+        <p className="text-xs text-slate-700 max-w-xs truncate">{booking.purpose}</p>
       </td>
       <td className="table-cell">
         <StatusBadge status={booking.status} />
       </td>
       <td className="table-cell">
-        <p className="text-xs text-gray-400">{format(parseISO(booking.created_at), 'MMM d')}</p>
+        <p className="text-xs text-slate-500">{format(parseISO(booking.created_at), 'MMM d, yyyy')}</p>
       </td>
       <td className="table-cell">
         {canCancel && (
           <button
             onClick={() => onCancel(booking.id)}
-            className="btn-secondary text-xs px-2 py-1 text-red-400 hover:text-red-300 hover:bg-red-900/20"
+            className="text-xs px-2.5 py-1 rounded-lg font-medium text-rose-600 bg-rose-50 border border-rose-200 hover:bg-rose-100 transition-colors"
           >
             Cancel
           </button>
@@ -76,7 +78,7 @@ export function BookingsPage() {
   useEffect(() => { loadBookings() }, [statusFilter])
 
   const handleCancel = async (id) => {
-    if (!window.confirm('Cancel this booking?')) return
+    if (!window.confirm('Are you sure you want to cancel this booking?')) return
     setCancelling(id)
     try {
       await bookingsApi.cancel(id)
@@ -91,25 +93,33 @@ export function BookingsPage() {
   const STATUSES = ['PENDING', 'APPROVED', 'COMPLETED', 'CANCELLED', 'REJECTED']
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in space-y-6">
       <PageHeader
         title="My Bookings"
-        subtitle="Track and manage your resource booking history"
+        subtitle="Review your reservations, status updates, and session timelines"
       />
 
-      {/* Filter */}
-      <div className="flex gap-2 mb-6 flex-wrap">
+      {/* Filter Tabs */}
+      <div className="flex gap-2 flex-wrap">
         <button
           onClick={() => setStatusFilter('')}
-          className={`btn-${statusFilter === '' ? 'primary' : 'secondary'} text-sm px-3 py-1.5`}
+          className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
+            statusFilter === ''
+              ? 'bg-indigo-600 text-white shadow-sm'
+              : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+          }`}
         >
-          All
+          All Bookings
         </button>
         {STATUSES.map((s) => (
           <button
             key={s}
             onClick={() => setStatusFilter(s)}
-            className={`btn-${statusFilter === s ? 'primary' : 'secondary'} text-sm px-3 py-1.5`}
+            className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              statusFilter === s
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+            }`}
           >
             {s[0] + s.slice(1).toLowerCase()}
           </button>
@@ -122,13 +132,13 @@ export function BookingsPage() {
         <EmptyState
           icon={CalendarCheck}
           title="No bookings found"
-          subtitle="Head to Resources to book equipment for your research"
+          subtitle="Explore the catalog and reserve institutional equipment for your work"
         />
       ) : (
         <div className="card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="border-b border-surface-border bg-surface">
+              <thead>
                 <tr>
                   <th className="table-header">Resource</th>
                   <th className="table-header">Time Slot</th>

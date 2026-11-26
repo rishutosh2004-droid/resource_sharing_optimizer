@@ -1,11 +1,12 @@
+from datetime import datetime, timezone
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 
 from app.database import get_db
-from app.models import Resource, User, ResourceStatus
+from app.models import Resource, User, ResourceStatus, Booking, BookingStatus
 from app.schemas import ResourceCreate, ResourceUpdate, ResourceOut
 from app.auth import get_current_user, require_admin
 
@@ -33,7 +34,45 @@ async def list_resources(
         query = query.where(Resource.is_cross_shareable == cross_shareable)
 
     result = await db.execute(query.order_by(Resource.name))
-    return result.scalars().all()
+    resources = result.scalars().all()
+
+    # Query currently active bookings right now
+    now = datetime.now(timezone.utc)
+    active_b_res = await db.execute(
+        select(Booking.resource_id, func.count(Booking.id))
+        .where(
+            Booking.status == BookingStatus.APPROVED,
+            Booking.start_time <= now,
+            Booking.end_time >= now,
+        )
+        .group_by(Booking.resource_id)
+    )
+    active_map = dict(active_b_res.all())
+
+    output = []
+    for r in resources:
+        in_use = active_map.get(r.id, 0)
+        total = getattr(r, "total_quantity", 1) or 1
+        avail = max(0, total - in_use)
+        r_out = ResourceOut(
+            id=r.id,
+            name=r.name,
+            category=r.category,
+            department_id=r.department_id,
+            department=r.department,
+            cost_per_hour=r.cost_per_hour,
+            total_quantity=total,
+            available_quantity=avail,
+            in_use_quantity=in_use,
+            is_cross_shareable=r.is_cross_shareable,
+            status=r.status,
+            specs_json=r.specs_json,
+            description=r.description,
+            created_at=r.created_at,
+        )
+        output.append(r_out)
+
+    return output
 
 
 @router.get("/{resource_id}", response_model=ResourceOut)
@@ -50,7 +89,37 @@ async def get_resource(
     resource = result.scalar_one_or_none()
     if not resource:
         raise HTTPException(status_code=404, detail="Resource not found")
-    return resource
+
+    now = datetime.now(timezone.utc)
+    active_b_res = await db.execute(
+        select(func.count(Booking.id))
+        .where(
+            Booking.resource_id == resource_id,
+            Booking.status == BookingStatus.APPROVED,
+            Booking.start_time <= now,
+            Booking.end_time >= now,
+        )
+    )
+    in_use = active_b_res.scalar() or 0
+    total = getattr(resource, "total_quantity", 1) or 1
+    avail = max(0, total - in_use)
+
+    return ResourceOut(
+        id=resource.id,
+        name=resource.name,
+        category=resource.category,
+        department_id=resource.department_id,
+        department=resource.department,
+        cost_per_hour=resource.cost_per_hour,
+        total_quantity=total,
+        available_quantity=avail,
+        in_use_quantity=in_use,
+        is_cross_shareable=resource.is_cross_shareable,
+        status=resource.status,
+        specs_json=resource.specs_json,
+        description=resource.description,
+        created_at=resource.created_at,
+    )
 
 
 @router.post("/", response_model=ResourceOut, status_code=201)

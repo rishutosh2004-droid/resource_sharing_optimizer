@@ -70,6 +70,7 @@ class ResourceCreate(BaseModel):
     category: str
     department_id: int
     cost_per_hour: float = 0.0
+    total_quantity: int = 1
     is_cross_shareable: bool = False
     status: ResourceStatus = ResourceStatus.ACTIVE
     specs_json: str = "{}"
@@ -80,6 +81,7 @@ class ResourceUpdate(BaseModel):
     name: Optional[str] = None
     category: Optional[str] = None
     cost_per_hour: Optional[float] = None
+    total_quantity: Optional[int] = None
     is_cross_shareable: Optional[bool] = None
     status: Optional[ResourceStatus] = None
     specs_json: Optional[str] = None
@@ -93,6 +95,9 @@ class ResourceOut(BaseModel):
     department_id: int
     department: Optional[DepartmentOut] = None
     cost_per_hour: float
+    total_quantity: int = 1
+    available_quantity: Optional[int] = None
+    in_use_quantity: Optional[int] = None
     is_cross_shareable: bool
     status: ResourceStatus
     specs_json: str

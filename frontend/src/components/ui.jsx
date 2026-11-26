@@ -25,7 +25,7 @@ export function StatusBadge({ status }) {
 export function LoadingSpinner({ size = 'md' }) {
   const sizes = { sm: 'h-4 w-4', md: 'h-8 w-8', lg: 'h-12 w-12' }
   return (
-    <div className={clsx('animate-spin rounded-full border-t-2 border-brand-500 border-r-transparent', sizes[size])} />
+    <div className={clsx('animate-spin rounded-full border-2 border-indigo-600 border-r-transparent', sizes[size])} />
   )
 }
 
@@ -41,12 +41,12 @@ export function EmptyState({ icon: Icon, title, subtitle, action }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
       {Icon && (
-        <div className="w-16 h-16 rounded-2xl bg-surface-hover border border-surface-border flex items-center justify-center mb-4">
-          <Icon className="w-8 h-8 text-gray-500" />
+        <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mb-4">
+          <Icon className="w-8 h-8 text-slate-500" />
         </div>
       )}
-      <h3 className="text-base font-semibold text-gray-300 mb-1">{title}</h3>
-      {subtitle && <p className="text-sm text-gray-500 mb-4 max-w-xs">{subtitle}</p>}
+      <h3 className="text-base font-semibold text-slate-800 mb-1">{title}</h3>
+      {subtitle && <p className="text-sm text-slate-500 mb-4 max-w-sm">{subtitle}</p>}
       {action}
     </div>
   )
@@ -54,8 +54,8 @@ export function EmptyState({ icon: Icon, title, subtitle, action }) {
 
 export function ErrorMessage({ message, onRetry }) {
   return (
-    <div className="card border-red-900/50 p-4 text-center">
-      <p className="text-red-400 text-sm mb-2">{message}</p>
+    <div className="bg-rose-50 border border-rose-200 rounded-xl p-4 text-center">
+      <p className="text-rose-700 text-sm font-medium mb-2">{message}</p>
       {onRetry && (
         <button onClick={onRetry} className="btn-secondary text-xs px-3 py-1">
           Try Again
@@ -67,10 +67,10 @@ export function ErrorMessage({ message, onRetry }) {
 
 export function PageHeader({ title, subtitle, action }) {
   return (
-    <div className="flex items-start justify-between mb-6">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
       <div>
-        <h1 className="text-2xl font-bold text-white">{title}</h1>
-        {subtitle && <p className="text-sm text-gray-400 mt-1">{subtitle}</p>}
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{title}</h1>
+        {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
       </div>
       {action && <div>{action}</div>}
     </div>
