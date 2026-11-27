@@ -63,6 +63,7 @@ pip install -r requirements.txt
 # SECRET_KEY=super-secret-jwt-key-change-in-production-32chars
 
 # Initialize database tables
+# Migrates existing USD prices to INR and demotes legacy Super Admin accounts.
 python -m app.database_init
 
 # Seed with demo data
@@ -92,7 +93,7 @@ npm run dev
 
 | Role | Email | Password |
 |------|-------|----------|
-| Super Admin | `admin@institution.edu` | `admin123` |
+| Demo Member | `admin@institution.edu` | `admin123` |
 | CS Dept Admin | `cs.admin@institution.edu` | `admin123` |
 | Bio Dept Admin | `bio.admin@institution.edu` | `admin123` |
 | CS Member | `john.doe@institution.edu` | `member123` |
@@ -130,7 +131,6 @@ SE project/
 │           ├── resources.py
 │           ├── bookings.py   # Redis distributed lock here
 │           ├── analytics.py
-│           └── users.py
 │
 └── frontend/
     ├── Dockerfile
@@ -160,7 +160,6 @@ SE project/
             ├── BookingsPage.jsx    # My bookings table
             ├── ApprovalsPage.jsx   # Admin approval workflow
             ├── AnalyticsPage.jsx   # Recharts + optimization suggestions
-            └── UsersPage.jsx       # User management (SUPER_ADMIN)
 ```
 
 ---
@@ -169,13 +168,14 @@ SE project/
 
 ### 1. Authentication & RBAC
 - JWT-based login with Bearer token
-- Three roles: `SUPER_ADMIN`, `DEPT_ADMIN`, `MEMBER`
+- Two roles: `DEPT_ADMIN`, `MEMBER`
 - Role-based guards on both FastAPI endpoints and React routes
 
 ### 2. Resource Management
 - CRUD for resources with category, department, cost, and shareability flags
 - Status lifecycle: `ACTIVE → MAINTENANCE → RETIRED`
 - Filterable catalog by category, department, and shareability
+- Resource hourly costs are stored and displayed in INR. Existing USD prices were converted using XE's mid-market rate of ₹92.8944 per USD on 2026-11-27; the database migration runs once during initialization.
 
 ### 3. Booking Engine with Redis Distributed Lock
 
@@ -226,7 +226,6 @@ is_underutilized = utilization_pct < 30.0  # threshold
 | `GET` | `/api/v1/bookings/pending-approvals` | Admin pending list |
 | `GET` | `/api/v1/analytics/utilization?days=30` | 🐼 Pandas utilization report |
 | `GET` | `/api/v1/analytics/dashboard` | KPI summary |
-| `GET` | `/api/v1/users/` | User list (SUPER_ADMIN) |
 
 Full interactive docs at: **http://localhost:8000/docs**
 

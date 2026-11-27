@@ -9,7 +9,6 @@ import { ResourcesPage } from './pages/ResourcesPage'
 import { BookingsPage } from './pages/BookingsPage'
 import { ApprovalsPage } from './pages/ApprovalsPage'
 import { AnalyticsPage } from './pages/AnalyticsPage'
-import { UsersPage } from './pages/UsersPage'
 
 function AppLayout() {
   return (
@@ -45,20 +44,12 @@ function App() {
             <Route
               path="/approvals"
               element={
-                <ProtectedRoute roles={['SUPER_ADMIN', 'DEPT_ADMIN']}>
+                <ProtectedRoute roles={['DEPT_ADMIN']}>
                   <ApprovalsPage />
                 </ProtectedRoute>
               }
             />
             <Route path="/analytics" element={<AnalyticsPage />} />
-            <Route
-              path="/users"
-              element={
-                <ProtectedRoute roles={['SUPER_ADMIN']}>
-                  <UsersPage />
-                </ProtectedRoute>
-              }
-            />
           </Route>
 
           {/* Catch all */}

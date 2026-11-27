@@ -19,11 +19,6 @@ class TokenData(BaseModel):
 
 # ─── Department ───────────────────────────────────────────────────────────────
 
-class DepartmentCreate(BaseModel):
-    name: str
-    code: str
-
-
 class DepartmentOut(BaseModel):
     id: int
     name: str
@@ -41,13 +36,6 @@ class UserCreate(BaseModel):
     full_name: str
     role: UserRole = UserRole.MEMBER
     department_id: Optional[int] = None
-
-
-class UserUpdate(BaseModel):
-    full_name: Optional[str] = None
-    role: Optional[UserRole] = None
-    department_id: Optional[int] = None
-    is_active: Optional[bool] = None
 
 
 class UserOut(BaseModel):

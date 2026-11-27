@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.redis_client import close_redis
-from app.routes import auth, departments, resources, bookings, analytics, users
+from app.routes import auth, departments, resources, bookings, analytics
 
 
 @asynccontextmanager
@@ -41,7 +41,6 @@ app.include_router(departments.router, prefix=API_PREFIX)
 app.include_router(resources.router, prefix=API_PREFIX)
 app.include_router(bookings.router, prefix=API_PREFIX)
 app.include_router(analytics.router, prefix=API_PREFIX)
-app.include_router(users.router, prefix=API_PREFIX)
 
 
 @app.get("/health")

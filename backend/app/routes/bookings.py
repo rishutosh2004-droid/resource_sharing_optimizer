@@ -53,7 +53,7 @@ async def list_bookings(
 
     if my_only or current_user.role == UserRole.MEMBER:
         query = query.where(Booking.user_id == current_user.id)
-    elif pending_approval and current_user.role in (UserRole.DEPT_ADMIN, UserRole.SUPER_ADMIN):
+    elif pending_approval and current_user.role == UserRole.DEPT_ADMIN:
         query = query.where(Booking.status == BookingStatus.PENDING)
 
     if status:
@@ -206,7 +206,7 @@ async def update_booking_status(
 
     # Permission checks
     is_own_booking = booking.user_id == current_user.id
-    is_admin = current_user.role in (UserRole.DEPT_ADMIN, UserRole.SUPER_ADMIN)
+    is_admin = current_user.role == UserRole.DEPT_ADMIN
     is_dept_admin_of_resource = (
         current_user.role == UserRole.DEPT_ADMIN
         and booking.resource.department_id == current_user.department_id

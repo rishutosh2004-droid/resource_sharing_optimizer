@@ -47,8 +47,6 @@ export const authApi = {
 export const departmentsApi = {
   list: () => api.get('/departments/'),
   get: (id) => api.get(`/departments/${id}`),
-  create: (data) => api.post('/departments/', data),
-  delete: (id) => api.delete(`/departments/${id}`),
 }
 
 // ── Resources ─────────────────────────────────────────────────────────────────
@@ -75,13 +73,6 @@ export const bookingsApi = {
 export const analyticsApi = {
   utilization: (days = 30) => api.get('/analytics/utilization', { params: { days } }),
   dashboard: () => api.get('/analytics/dashboard'),
-}
-
-// ── Users ─────────────────────────────────────────────────────────────────────
-export const usersApi = {
-  list: () => api.get('/users/'),
-  get: (id) => api.get(`/users/${id}`),
-  update: (id, data) => api.patch(`/users/${id}`, data),
 }
 
 export default api

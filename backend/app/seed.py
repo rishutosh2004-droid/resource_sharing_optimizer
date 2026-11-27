@@ -49,38 +49,38 @@ async def seed():
         print(f"[seed] Created departments: CS={cs_dept.id}, BIO={bio_dept.id}, PHY={phy_dept.id}")
 
         # ── 2. Users ──────────────────────────────────────────────────────────
-        super_admin = User(
-            email="admin@institution.edu",
+        demo_member = User(
+            email="demo@institution.edu",
             hashed_password=get_password_hash("admin123"),
-            full_name="System Administrator",
-            role=UserRole.SUPER_ADMIN,
+            full_name="Demo Member",
+            role=UserRole.MEMBER,
             department_id=None,
         )
         cs_admin = User(
             email="cs.admin@institution.edu",
             hashed_password=get_password_hash("admin123"),
-            full_name="Dr. Alice Chen",
+            full_name="Dr. Jitendra yadav",
             role=UserRole.DEPT_ADMIN,
             department_id=cs_dept.id,
         )
         bio_admin = User(
             email="bio.admin@institution.edu",
             hashed_password=get_password_hash("admin123"),
-            full_name="Dr. Robert Kim",
+            full_name="Dr. Reena Kumari",
             role=UserRole.DEPT_ADMIN,
             department_id=bio_dept.id,
         )
         cs_member1 = User(
-            email="john.doe@institution.edu",
+            email="RishutoshKumar@institution.edu",
             hashed_password=get_password_hash("member123"),
-            full_name="John Doe",
+            full_name="Rishutosh Kumar Singh",
             role=UserRole.MEMBER,
             department_id=cs_dept.id,
         )
         bio_member1 = User(
             email="jane.smith@institution.edu",
             hashed_password=get_password_hash("member123"),
-            full_name="Jane Smith",
+            full_name="Raj Dutta",
             role=UserRole.MEMBER,
             department_id=bio_dept.id,
         )
@@ -91,7 +91,7 @@ async def seed():
             role=UserRole.MEMBER,
             department_id=phy_dept.id,
         )
-        session.add_all([super_admin, cs_admin, bio_admin, cs_member1, bio_member1, phy_member1])
+        session.add_all([demo_member, cs_admin, bio_admin, cs_member1, bio_member1, phy_member1])
         await session.flush()
         print("[seed] Created 6 users.")
 
@@ -100,7 +100,7 @@ async def seed():
             department_id=cs_dept.id,
             name="GPU Cluster A100",
             category="Computing",
-            cost_per_hour=150.0,
+            cost_per_hour=13934.16,
             total_quantity=8,
             is_cross_shareable=True,
             status=ResourceStatus.ACTIVE,
@@ -111,7 +111,7 @@ async def seed():
             department_id=cs_dept.id,
             name="VR Research Lab",
             category="Research Lab",
-            cost_per_hour=50.0,
+            cost_per_hour=4644.72,
             total_quantity=10,
             is_cross_shareable=True,
             status=ResourceStatus.ACTIVE,
@@ -122,7 +122,7 @@ async def seed():
             department_id=cs_dept.id,
             name="HPC Linux Cluster",
             category="Computing",
-            cost_per_hour=80.0,
+            cost_per_hour=7431.55,
             total_quantity=16,
             is_cross_shareable=False,
             status=ResourceStatus.ACTIVE,
@@ -133,7 +133,7 @@ async def seed():
             department_id=bio_dept.id,
             name="Mass Spectrometer",
             category="Analytical Instrument",
-            cost_per_hour=200.0,
+            cost_per_hour=18578.88,
             total_quantity=2,
             is_cross_shareable=True,
             status=ResourceStatus.ACTIVE,
@@ -144,7 +144,7 @@ async def seed():
             department_id=bio_dept.id,
             name="Spectrophotometer Suite",
             category="Analytical Instrument",
-            cost_per_hour=35.0,
+            cost_per_hour=3251.30,
             total_quantity=4,
             is_cross_shareable=True,
             status=ResourceStatus.ACTIVE,
@@ -155,7 +155,7 @@ async def seed():
             department_id=bio_dept.id,
             name="Real-Time PCR System",
             category="Molecular Biology",
-            cost_per_hour=60.0,
+            cost_per_hour=5573.66,
             total_quantity=6,
             is_cross_shareable=False,
             status=ResourceStatus.ACTIVE,
@@ -166,7 +166,7 @@ async def seed():
             department_id=phy_dept.id,
             name="High-Power Laser Lab",
             category="Research Lab",
-            cost_per_hour=120.0,
+            cost_per_hour=11147.33,
             total_quantity=3,
             is_cross_shareable=True,
             status=ResourceStatus.ACTIVE,
@@ -177,7 +177,7 @@ async def seed():
             department_id=phy_dept.id,
             name="Class 100 Clean Room",
             category="Fabrication",
-            cost_per_hour=90.0,
+            cost_per_hour=8360.50,
             total_quantity=2,
             is_cross_shareable=True,
             status=ResourceStatus.MAINTENANCE,
@@ -349,7 +349,7 @@ async def seed():
         print(f"[seed] Created {len(bookings_data)} bookings.")
         print("[seed] ✅ Database seeded successfully!")
         print("\n📋 Login Credentials:")
-        print("  Super Admin : admin@institution.edu         / admin123")
+        print("  Demo Member : admin@institution.edu         / admin123")
         print("  CS Admin    : cs.admin@institution.edu      / admin123")
         print("  Bio Admin   : bio.admin@institution.edu     / admin123")
         print("  CS Member   : john.doe@institution.edu      / member123")

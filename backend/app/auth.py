@@ -69,5 +69,4 @@ def require_roles(*roles: UserRole):
     return role_checker
 
 
-require_admin = require_roles(UserRole.SUPER_ADMIN, UserRole.DEPT_ADMIN)
-require_super_admin = require_roles(UserRole.SUPER_ADMIN)
+require_admin = require_roles(UserRole.DEPT_ADMIN)

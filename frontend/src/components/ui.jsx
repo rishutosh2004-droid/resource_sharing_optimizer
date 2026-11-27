@@ -12,7 +12,6 @@ const STATUS_CONFIG = {
   MAINTENANCE: { label: 'Maintenance', cls: 'badge-warning' },
   RETIRED:     { label: 'Retired',     cls: 'badge-neutral' },
   // User roles
-  SUPER_ADMIN: { label: 'Super Admin', cls: 'badge-purple' },
   DEPT_ADMIN:  { label: 'Dept Admin',  cls: 'badge-info' },
   MEMBER:      { label: 'Member',      cls: 'badge-neutral' },
 }

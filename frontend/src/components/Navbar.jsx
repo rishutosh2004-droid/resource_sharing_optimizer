@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Package, CalendarCheck, BarChart3,
-  Users, LogOut, Zap, ShieldCheck,
+  LogOut, Zap, ShieldCheck,
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import clsx from 'clsx'
@@ -12,11 +12,10 @@ const NAV_ITEMS = [
   { to: '/bookings', icon: CalendarCheck, label: 'My Bookings' },
   { to: '/approvals', icon: ShieldCheck, label: 'Approvals', adminOnly: true },
   { to: '/analytics', icon: BarChart3, label: 'Analytics' },
-  { to: '/users', icon: Users, label: 'Users', superAdminOnly: true },
 ]
 
 export function Navbar() {
-  const { user, logout, isAdmin, isSuperAdmin } = useAuth()
+  const { user, logout, isAdmin } = useAuth()
   const navigate = useNavigate()
 
   const handleLogout = () => {
@@ -25,7 +24,6 @@ export function Navbar() {
   }
 
   const roleBadge = {
-    SUPER_ADMIN: { label: 'Super Admin', cls: 'text-purple-700 bg-purple-50 border border-purple-200' },
     DEPT_ADMIN: { label: 'Dept Admin', cls: 'text-indigo-700 bg-indigo-50 border border-indigo-200' },
     MEMBER: { label: 'Member', cls: 'text-emerald-700 bg-emerald-50 border border-emerald-200' },
   }[user?.role] || { label: 'User', cls: 'text-slate-700 bg-slate-100 border border-slate-200' }
@@ -50,8 +48,7 @@ export function Navbar() {
         <p className="px-3 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
           Navigation
         </p>
-        {NAV_ITEMS.map(({ to, icon: Icon, label, adminOnly, superAdminOnly }) => {
-          if (superAdminOnly && !isSuperAdmin) return null
+        {NAV_ITEMS.map(({ to, icon: Icon, label, adminOnly }) => {
           if (adminOnly && !isAdmin) return null
 
           return (

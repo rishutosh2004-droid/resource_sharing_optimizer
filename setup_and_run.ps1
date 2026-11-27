@@ -79,7 +79,7 @@ if (-Not $nodeExists) {
 
 Write-Host ""
 Write-Host ">>> Demo Login Credentials:" -ForegroundColor Magenta
-Write-Host "    Super Admin : admin@institution.edu        / admin123" -ForegroundColor White
+Write-Host "    Demo Member : admin@institution.edu        / admin123" -ForegroundColor White
 Write-Host "    CS Admin    : cs.admin@institution.edu     / admin123" -ForegroundColor White
 Write-Host "    CS Member   : john.doe@institution.edu     / member123" -ForegroundColor White
 Write-Host ""

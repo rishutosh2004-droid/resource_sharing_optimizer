@@ -4,10 +4,16 @@ import { useAuth } from '../context/AuthContext'
 import { Modal } from '../components/Modal'
 import { StatusBadge, LoadingPage, EmptyState, PageHeader } from '../components/ui'
 import {
-  Package, Search, DollarSign, Share2,
+  Package, Search, Share2,
   Cpu, FlaskConical, Zap, Microscope, Check, Layers,
 } from 'lucide-react'
 import { format, addHours } from 'date-fns'
+
+const formatPrice = (amount) => new Intl.NumberFormat('en-IN', {
+  style: 'currency',
+  currency: 'INR',
+  maximumFractionDigits: 2,
+}).format(amount)
 
 const CATEGORY_ICONS = {
   'Computing': Cpu,
@@ -72,7 +78,7 @@ function ResourceCard({ resource, onBook }) {
       <div className="flex items-center justify-between text-xs text-slate-600 pt-0.5">
         <div>
           <span className="text-slate-400">Rate: </span>
-          <span className="font-bold text-slate-900">${resource.cost_per_hour}</span>
+          <span className="font-bold text-slate-900">{formatPrice(resource.cost_per_hour)}</span>
           <span className="text-slate-500">/hr</span>
         </div>
         {resource.is_cross_shareable ? (
@@ -159,7 +165,7 @@ function BookingModal({ resource, onClose, onSuccess }) {
           <span className="inline-block text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full mb-0.5">
             {avail} of {total} Units Free
           </span>
-          <p className="text-slate-900 font-bold text-xs">${resource.cost_per_hour}/hr</p>
+          <p className="text-slate-900 font-bold text-xs">{formatPrice(resource.cost_per_hour)}/hr</p>
         </div>
       </div>
 

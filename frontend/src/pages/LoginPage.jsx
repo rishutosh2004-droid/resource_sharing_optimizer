@@ -12,7 +12,7 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   const DEMO_ACCOUNTS = [
-    { label: 'Super Admin', email: 'admin@institution.edu', password: 'admin123', desc: 'Global Control' },
+    { label: 'Demo Member', email: 'admin@institution.edu', password: 'admin123', desc: 'Member access' },
     { label: 'CS Admin', email: 'cs.admin@institution.edu', password: 'admin123', desc: 'CS Approvals' },
     { label: 'Bio Admin', email: 'bio.admin@institution.edu', password: 'admin123', desc: 'Bio Approvals' },
     { label: 'CS Member', email: 'john.doe@institution.edu', password: 'member123', desc: 'Researcher' },
